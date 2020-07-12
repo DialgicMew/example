@@ -1,6 +1,5 @@
 #!/usr/bin/env groovy
-pipeline{
-agent any
+node{
 parameters {
         string(name: 'branchA', defaultValue: 'master', description: 'Comapare which branch?')
 
