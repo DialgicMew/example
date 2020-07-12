@@ -16,7 +16,7 @@ parameters {
 stage('Build') 
 {
 
-    result = logic(${params.branchA})
+    result = logic("vatsalya")
     echo "${result}"
 
 //  checkout([$class: 'GitSCM',
