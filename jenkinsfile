@@ -1,52 +1,35 @@
 #!/usr/bin/env groovy
+String[] names = ["https://github.com/DialgicMew/example.git", "https://github.com/DialgicMew/jenkins.git"]
 
-def result;
-def logic(String name){
-    def name1 = "Hi ${name}"
-    return name1
+def gitFunction(String repo){
+ checkout([$class: 'GitSCM',
+ branches: [[name: '*/master']],
+ doGenerateSubmoduleConfigurations: false,
+ extensions: [[$class: 'CleanBeforeCheckout']],
+ submoduleCfg: [],
+ userRemoteConfigs:  [[credentialsId: 'gitCreds', url: repo]]])
+ def output = sh returnStdout: true, script: "git diff remotes/origin/${params.branchA} remotes/origin/${params.branchB}"  
+ return output
 }
-
-
+def result;
 node{
-parameters {
-        string(name: 'branchA', defaultValue: 'master', description: 'Comapare which branch?')
-
+parameters
+   {
+        string(name: 'branchA', defaultValue: 'master', description: 'Compare which branch?')
         string(name: 'branchB', defaultValue: 'dev', description: 'Compare with which branch?')
     }
-stage('Build') 
+stage('Checkout') 
 {
-
-    result = logic("vatsalya")
+    result = gitFunction(names[0])
     echo "${result}"
-
-//  checkout([$class: 'GitSCM',
-//  branches: [[name: '*/master']],
-//  doGenerateSubmoduleConfigurations: false,
-//  extensions: [[$class: 'CleanBeforeCheckout']],
-//  submoduleCfg: [],
-//  userRemoteConfigs:  [[credentialsId: 'gitCreds', url: "https://github.com/DialgicMew/example.git"]]])
-//  sh 'ls'
-//  sh "git diff --name-only remotes/origin/${params.branchA} remotes/origin/${params.branchB}" 
-//  checkout([$class: 'GitSCM',
-//  branches: [[name: '*/master']],
-//  doGenerateSubmoduleConfigurations: false,
-//  extensions: [[$class: 'CleanBeforeCheckout']],
-//  submoduleCfg: [],
-//  userRemoteConfigs:  [[credentialsId: 'gitCreds', url: "https://github.com/DialgicMew/jenkins.git"]]])
-//  sh 'ls'
-//  sh "git diff --name-only remotes/origin/${params.branchA} remotes/origin/${params.branchB}"   
-
+ 
 }
 stage('Test') 
 {
-
 echo "Testing"
-
 }
 stage('Deploy') 
 {
-
 echo "Deploying"
-
 }
 }
