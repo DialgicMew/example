@@ -7,7 +7,7 @@ parameters {
     }
 stage('Build') 
 {
-steps{
+
  checkout([$class: 'GitSCM',
  branches: [[name: '*/master']],
  doGenerateSubmoduleConfigurations: false,
@@ -24,19 +24,18 @@ steps{
  userRemoteConfigs:  [[credentialsId: 'gitCreds', url: "https://github.com/DialgicMew/jenkins.git"]]])
  sh 'ls'
  sh "git diff --name-only remotes/origin/${params.branchA} remotes/origin/${params.branchB}"   
-}
+
 }
 stage('Test') 
 {
-steps{
+
 echo "Testing"
-}
+
 }
 stage('Deploy') 
 {
-steps{
-echo "Deploying"
-}
-}
 
+echo "Deploying"
+
+}
 }
