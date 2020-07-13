@@ -19,7 +19,7 @@ def inputValues(){
     def names = []
     def start = 0
     def end = 0
-    def var = ${params.gitRepos}
+    def var = params.gitRepos
     for (element in var) {
         if(element == ';'){
             def additionValue = var.substring(start, end)
@@ -34,6 +34,7 @@ def inputValues(){
 def result;
 
 node{
+
 properties([
   parameters(
     [booleanParam(name: 'checkPattern', defaultValue: false, description: 'Check Branch Pattern?'),
