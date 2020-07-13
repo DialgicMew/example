@@ -47,8 +47,8 @@ parameters
 stage('Input') 
 {
     inputValues()
-    for (element in collection) {
-        
+    for (element in names) {
+        echo element
     }
 
 
