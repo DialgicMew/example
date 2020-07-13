@@ -46,6 +46,7 @@ parameters
     }
 stage('Input') 
 {
+    echo "${params.source}"
     inputValues()
     for (element in names) {
         echo "${element}"
