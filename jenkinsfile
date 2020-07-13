@@ -35,10 +35,10 @@ def result;
 
 node{
 parameters{
-        // booleanParam(name: 'checkPattern', defaultValue: false, description: 'Check Branch Pattern?')
-        // text(name: 'gitRepos', defaultValue: 'https://github.com/DialgicMew/example.git', description: 'Enter the git repos seperated by a semicolon')
+    [booleanParam(name: 'checkPattern', defaultValue: false, description: 'Check Branch Pattern?')
+    text(name: 'gitRepos', defaultValue: 'https://github.com/DialgicMew/example.git', description: 'Enter the git repos seperated by a semicolon')
     string(name: 'source', defaultValue: 'master', description: 'Compare which branch?')
-    string(name: 'target', defaultValue: 'dev', description: 'Compare with which branch?')
+    string(name: 'target', defaultValue: 'dev', description: 'Compare with which branch?')]
 }
 stage('Build') 
 {
