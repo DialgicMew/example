@@ -1,5 +1,4 @@
 #!/usr/bin/env groovy
-def names = []
 // inputs repos
 // def checkBranchPattern(String pattern){} => true/false
 // def compareBranches(repo, sourceBranch, targetBranch,){} => diferences
@@ -17,6 +16,7 @@ def gitFunction(String repo){
 }
 
 def inputValues(){
+    def names = []
     def start = 0
     def end = 0
     def var = "https://github.com/DialgicMew/example.git;https://github.com/DialgicMew/jenkins.git"
