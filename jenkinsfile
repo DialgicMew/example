@@ -48,7 +48,7 @@ stage('Input')
 {
     inputValues()
     for (element in names) {
-        echo element
+        echo "${element}"
     }
 
 
