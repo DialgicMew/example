@@ -15,6 +15,15 @@ def gitFunction(String repo){
  return output
 }
 
+// def evaluate(String ans){
+//     if(ans == "pom.xml")
+//     {
+
+
+//     }
+
+// }
+
 def inputValues(){
     def names = []
     def start = 0
