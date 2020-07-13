@@ -23,10 +23,10 @@ def gitFunction(String repo){
 def inputValues(){
     def start = 0
     def end = 0
-    def value = params.gitRepos
-    for (element in value) {
+    
+    for (element in var) {
         if(element == ';'){
-            def additionValue = value.substring(start, end)
+            def additionValue = var.substring(start, end)
             names.add(additionValue)
             start = end
         }
