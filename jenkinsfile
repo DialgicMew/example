@@ -16,7 +16,7 @@ def gitFunction(String repo){
 }
 
 def evaluate(String ans){
-    if(ans == "pom.xml")
+    if(ans.trim() == "pom.xml")
     {
         echo "yess bro"
 
