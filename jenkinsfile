@@ -1,5 +1,13 @@
 #!/usr/bin/env groovy
-String[] names = ["https://github.com/DialgicMew/example.git", "https://github.com/DialgicMew/jenkins.git"]
+def names = []
+
+def var = "https://github.com/DialgicMew/example.git;https://github.com/DialgicMew/jenkins.git"
+
+// inputs repos
+// def checkBranchPattern(String pattern){} => true/false
+// def compareBranches(repo, sourceBranch, targetBranch,){} => diferences
+// def evaluateDifferences(String difference){} => true/false
+// run only if checkBranchPattern true => def doJGitOperation(){"some commands"}
 
 def gitFunction(String repo){
  checkout([$class: 'GitSCM',
@@ -8,20 +16,43 @@ def gitFunction(String repo){
  extensions: [[$class: 'CleanBeforeCheckout']],
  submoduleCfg: [],
  userRemoteConfigs:  [[credentialsId: 'gitCreds', url: repo]]])
- def output = sh returnStdout: true, script: "git diff remotes/origin/${params.branchA} remotes/origin/${params.branchB}"  
+ def output = sh returnStdout: true, script: "git diff remotes/origin/${params.source} remotes/origin/${params.target}"  
  return output
 }
+
+def inputValues(){
+    def start = 0
+    def end = 0
+    def value = ${params.gitRepos}
+    for (element in value) {
+        if(element == ';'){
+            def additionValue = value.substring(start, end)
+            names.add(additionValue)
+            start = end
+        }
+        end = end + 1
+    }
+}
+
 def result;
+
 node{
 parameters
    {
-        string(name: 'branchA', defaultValue: 'master', description: 'Compare which branch?')
-        string(name: 'branchB', defaultValue: 'dev', description: 'Compare with which branch?')
+        booleanParam(name: 'checkPattern', defaultValue: false, description: 'Check Branch Pattern?')
+        text(name: 'gitRepos', defaultValue: 'https://github.com/DialgicMew/example.git', description: 'Enter the git repos seperated by a semicolon')
+        string(name: 'source', defaultValue: 'master', description: 'Compare which branch?')
+        string(name: 'target', defaultValue: 'dev', description: 'Compare with which branch?')
     }
-stage('Checkout') 
+stage('Input') 
 {
-    result = gitFunction(names[0])
-    echo "${result}"
+    inputValues()
+    for (element in collection) {
+        
+    }
+
+
+
  
 }
 stage('Test') 
