@@ -24,7 +24,7 @@ def inputValues(){
         if(element == ';'){
             def additionValue = var.substring(start, end)
             names.add(additionValue)
-            start = end
+            start = end + 1
         }
         end = end + 1
     }
