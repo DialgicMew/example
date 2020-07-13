@@ -40,7 +40,7 @@ parameters{
     string(name: 'source', defaultValue: 'master', description: 'Compare which branch?')
     string(name: 'target', defaultValue: 'dev', description: 'Compare with which branch?')
 }
-stage('Input') 
+stage('Build') 
 {
     echo "${params.source}"
     result = inputValues()
