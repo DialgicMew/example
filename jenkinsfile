@@ -19,7 +19,7 @@ def inputValues(){
     def names = []
     def start = 0
     def end = 0
-    def var = "https://github.com/DialgicMew/example.git;https://github.com/DialgicMew/jenkins.git"
+    def var = "https://github.com/DialgicMew/example.git;https://github.com/DialgicMew/jenkins.git;"
     for (element in var) {
         if(element == ';'){
             def additionValue = var.substring(start, end)
