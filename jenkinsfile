@@ -11,7 +11,7 @@ def gitFunction(String repo){
  extensions: [[$class: 'CleanBeforeCheckout']],
  submoduleCfg: [],
  userRemoteConfigs:  [[credentialsId: 'gitCreds', url: repo]]])
- def output = sh returnStdout: true, script: "git diff remotes/origin/${params.source} remotes/origin/${params.target}"  
+ def output = sh returnStdout: true, script: "git diff --name-only remotes/origin/${params.source} remotes/origin/${params.target}"  
  return output
 }
 
