@@ -19,7 +19,7 @@ def inputValues(){
     def names = []
     def start = 0
     def end = 0
-    def var = "https://github.com/DialgicMew/example.git;https://github.com/DialgicMew/jenkins.git;"
+    def var = ${params.gitRepos}
     for (element in var) {
         if(element == ';'){
             def additionValue = var.substring(start, end)
@@ -34,15 +34,13 @@ def inputValues(){
 def result;
 
 node{
-
-
 properties([
   parameters(
     [booleanParam(name: 'checkPattern', defaultValue: false, description: 'Check Branch Pattern?'),
+    booleanParam(name: 'doRelease', defaultValue: false, description: 'Release '),
     text(name: 'gitRepos', defaultValue: 'https://github.com/DialgicMew/example.git', description: 'Enter the git repos seperated by a semicolon'),
-    string(name: 'source', defaultValue: 'master', description: 'Compare which branch?'),
-    string(name: 'target', defaultValue: 'dev', description: 'Compare with which branch?')]
-)
+    string(name: 'source', defaultValue: 'master', description: 'Source Branch of comparison'),
+    string(name: 'target', defaultValue: 'dev', description: 'Target branch of comparison')])
 ])
 
 stage('Build') 
@@ -50,9 +48,9 @@ stage('Build')
     echo "${params.source}"
     result = inputValues()
     for (element in result) {
-        echo element
-    }
-    
+        def answer = gitFunction(element)
+        echo answer
+    } 
 }
 stage('Test') 
 {
