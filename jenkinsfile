@@ -59,6 +59,7 @@ stage('Build')
     result = inputValues()
     for (element in result) {
         def answer = gitFunction(element)
+        evaluate(answer)
         echo answer
     } 
 }
