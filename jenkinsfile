@@ -31,8 +31,10 @@ def evaluate(String ans){
             }
             if(tag == 'version'){
                 return false
+                // false means there are no difference in code in the branches selected
             }
             return true
+            // true means that there are some differences in the code in  the branches selected
         }
         return true
     }
@@ -62,7 +64,6 @@ node{
 properties([
   parameters(
     [booleanParam(name: 'checkPattern', defaultValue: false, description: 'Check Branch Pattern?'),
-    booleanParam(name: 'doRelease', defaultValue: false, description: 'Release '),
     text(name: 'gitRepos', defaultValue: 'https://github.com/DialgicMew/jenkins.git;', description: 'Enter the git repos seperated by a semicolon'),
     string(name: 'source', defaultValue: 'master', description: 'Source Branch of comparison'),
     string(name: 'target', defaultValue: 'dev', description: 'Target branch of comparison')])
@@ -76,9 +77,11 @@ stage('Build')
         def answer = gitFunction(element)
         def ansBool = evaluate(answer)
         if(ansBool == false){
-            echo "No Changes between branches in ${element}"
+            echo "Code Repository ${element} not eligible for release, since no code difference found between ${params.source} and ${params.target}"
         }
-        echo ansBool.toString()
+        else{
+            echo "Some Changes have been detected between branches ${params.source} and ${params.target} in ${element}"
+        }
     } 
 }
 stage('Test') 
