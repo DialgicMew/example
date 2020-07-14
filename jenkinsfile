@@ -1,9 +1,4 @@
 #!/usr/bin/env groovy
-// inputs repos
-// def checkBranchPattern(String pattern){} => true/false
-// def compareBranches(repo, sourceBranch, targetBranch,){} => diferences
-// def evaluateDifferences(String difference){} => true/false
-// run only if checkBranchPattern true => def doJGitOperation(){"some commands"}
 def gitFunction(String repo){
  checkout([$class: 'GitSCM',
  branches: [[name: '*/master']],
@@ -11,11 +6,23 @@ def gitFunction(String repo){
  extensions: [[$class: 'CleanBeforeCheckout']],
  submoduleCfg: [],
  userRemoteConfigs:  [[credentialsId: 'gitCreds', url: repo]]])
- def output = sh returnStdout: true, script: "git diff --name-only remotes/origin/${params.source} remotes/origin/${params.target}"  
- return output
+}
+
+
+def findBranch(){
+    //git branch -r --list origin/release-*.*.*
+    // what will you guys use in your scenario above one or bottom one
+    def ans = sh returnStdout: true, script: "git branch --list release-*.*.*"  
+    if(ans.trim() != ''){
+        return true
+        //means that there exists some repo like release-*.*.*
+    }
+    return false
+    //means that there no existing repo like release-*.*.*
 }
 
 def evaluate(String ans){
+    def ans = sh returnStdout: true, script: "git diff --name-only remotes/origin/${params.source} remotes/origin/${params.target}"  
     if(ans.trim() == "pom.xml")
     {
         def numAns = sh returnStdout: true, script: "git diff --numstat remotes/origin/${params.source} remotes/origin/${params.target}"
@@ -44,11 +51,11 @@ def evaluate(String ans){
     return true
 }
 
-def inputValues(){
+def inputValues(String par){
     def names = []
     def start = 0
     def end = 0
-    def var = params.gitRepos
+    def var = par
     for (element in var) {
         if(element == ';'){
             def additionValue = var.substring(start, end)
@@ -60,39 +67,46 @@ def inputValues(){
     return names
 }
 
-def result;
-
 node{
 
 properties([
   parameters(
     [booleanParam(name: 'checkPattern', defaultValue: false, description: 'Check Branch Pattern?'),
-    text(name: 'gitRepos', defaultValue: 'https://github.com/DialgicMew/jenkins.git;', description: 'Enter the git repos seperated by a semicolon'),
+    text(name: 'gitRepos', defaultValue: 'https://github.com/DialgicMew/jenkins.git;', description: 'Enter the git repos, add a semicolon after each repo'),
+    text(name: 'EmailIds', defaultValue: 'vatsalya.singh.ext@telekom-digital.com;', description: 'Enter the git repos, add a semicolon after each repo'),
     string(name: 'source', defaultValue: 'master', description: 'Source Branch of comparison'),
+    // defaultValue to be changed to dev in source and master in target. default value to be set to a company git repo in gitRepos ending by semicolon
     string(name: 'target', defaultValue: 'dev', description: 'Target branch of comparison')])
 ])
 
-stage('Build') 
+stage('Operation') 
 {
-    echo "${params.source}"
-    result = inputValues()
-    for (element in result) {
-        def answer = gitFunction(element)
-        def ansBool = evaluate(answer)
-        if(ansBool == false){
-            echo "Code Repository ${element} not eligible for release, since no code difference found between ${params.source} and ${params.target}"
-        }
-        else{
-            echo "Some Changes have been detected between branches ${params.source} and ${params.target} in ${element}"
-        }
-    } 
-}
-stage('Test') 
-{
-echo "Testing"
-}
-stage('Deploy') 
-{
-echo "Deploying"
+    def result = inputValues(params.gitRepos)
+    def emails = inputValues(params.EmailIds)
+    if(params.source == 'master'){
+        // master to be changed to dev
+        for (element in result) {
+            gitFunction(element)
+            def ansBool = evaluate()
+            if(ansBool == false){
+                echo "Code Repository ${element} not eligible for release, since no code difference found between ${params.source} and ${params.target}"
+            }
+            else{
+                echo "Some Changes have been detected between branches ${params.source} and ${params.target} in ${element}"
+            }
+        } 
+    }
+    else if(params.source == 'release'){
+        for (element in result) {
+            gitFunction(element)
+            def boolAns = findBranch()
+            if(boolAns == true){
+                echo "Run maven command"
+            }
+            else{
+                echo "Do not Run maven command"
+            }  
+        } 
+    }
 }
 }
