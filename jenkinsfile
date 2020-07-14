@@ -26,16 +26,17 @@ def evaluate(String ans){
             for(int start = 0; start < output.length(); start = start + 1){
                 if(output[start] == '<'){
                     tag = output.substring(start+1, start + 8)
-                    echo tag
                     break
                 }
-                
             }
+            if(tag == 'version'){
+                return false
+            }
+            return true
         }
-
-        echo "yess bro"
+        return true
     }
-        echo "No bro"
+    return true
 }
 
 def inputValues(){
@@ -62,7 +63,7 @@ properties([
   parameters(
     [booleanParam(name: 'checkPattern', defaultValue: false, description: 'Check Branch Pattern?'),
     booleanParam(name: 'doRelease', defaultValue: false, description: 'Release '),
-    text(name: 'gitRepos', defaultValue: 'https://github.com/DialgicMew/example.git;', description: 'Enter the git repos seperated by a semicolon'),
+    text(name: 'gitRepos', defaultValue: 'https://github.com/DialgicMew/jenkins.git;', description: 'Enter the git repos seperated by a semicolon'),
     string(name: 'source', defaultValue: 'master', description: 'Source Branch of comparison'),
     string(name: 'target', defaultValue: 'dev', description: 'Target branch of comparison')])
 ])
@@ -73,8 +74,8 @@ stage('Build')
     result = inputValues()
     for (element in result) {
         def answer = gitFunction(element)
-        evaluate(answer)
-        echo answer
+        def ansBool = evaluate(answer)
+        echo ansBool
     } 
 }
 stage('Test') 
