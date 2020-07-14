@@ -25,7 +25,7 @@ def evaluate(String ans){
             def tag;
             for(int start = 0; start < output.length(); start = start + 1){
                 if(output[start] == '<'){
-                    tag = output.substring(start, start + 7)
+                    tag = output.substring(start+1, start + 8)
                     echo tag
                     break
                 }
