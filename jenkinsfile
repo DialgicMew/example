@@ -75,6 +75,9 @@ stage('Build')
     for (element in result) {
         def answer = gitFunction(element)
         def ansBool = evaluate(answer)
+        if(ansBool == false){
+            echo "No Changes between branches in ${element}"
+        }
         echo ansBool.toString()
     } 
 }
