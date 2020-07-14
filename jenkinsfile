@@ -20,8 +20,19 @@ def evaluate(String ans){
     {
         def numAns = sh returnStdout: true, script: "git diff --numstat remotes/origin/${params.source} remotes/origin/${params.target}"
         def numOfLines = numAns.substring(0, 2).trim()
-        echo numOfLines
-        def output = sh returnStdout: true, script: "git diff --unified=0 remotes/origin/${params.source} remotes/origin/${params.target}"  
+        if(numOfLines == '1'){
+            def output = sh returnStdout: true, script: "git diff --unified=0 remotes/origin/${params.source} remotes/origin/${params.target}" 
+            def start = 0;
+            def tag;
+            for(element in output){
+                start = start + 1
+                if(element == '<'){
+                    tag = output.substring(start, start + 8)
+                    echo tag
+                }
+                
+            }
+        }
 
         echo "yess bro"
     }
