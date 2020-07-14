@@ -22,7 +22,6 @@ def evaluate(String ans){
         def numOfLines = numAns.substring(0, 2).trim()
         if(numOfLines == '1'){
             def output = sh returnStdout: true, script: "git diff --unified=0 remotes/origin/${params.source} remotes/origin/${params.target}" 
-            def start = 0;
             def tag;
             for(int start = 0; start < output.length(); start = start + 1){
                 if(element == '<'){
