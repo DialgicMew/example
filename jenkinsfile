@@ -75,7 +75,7 @@ stage('Build')
     for (element in result) {
         def answer = gitFunction(element)
         def ansBool = evaluate(answer)
-        echo String.valueOf(ansBool)
+        echo ansBool.toString()
     } 
 }
 stage('Test') 
