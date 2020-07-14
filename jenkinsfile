@@ -20,7 +20,7 @@ def evaluate(String ans){
     {
         def numAns = sh returnStdout: true, script: "git diff --numstat remotes/origin/${params.source} remotes/origin/${params.target}"
         def numOfLines = numAns.substring(0, 2).trim().toInteger()
-        echo numOfLines
+        echo ${numOfLines}
         def output = sh returnStdout: true, script: "git diff --unified=0 remotes/origin/${params.source} remotes/origin/${params.target}"  
 
         echo "yess bro"
