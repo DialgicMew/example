@@ -75,7 +75,7 @@ properties
                 [
                 booleanParam(name: 'checkPattern', defaultValue: false, description: 'Check Branch Pattern?'),
                 booleanParam(name: 'doRelease', defaultValue: false, description: 'Release '),
-                text(name: 'gitRepos', defaultValue: 'https://github.com/DialgicMew/example.git;', description: 'Enter the git repos seperated by a semicolon'),
+                text(name: 'gitRepos', defaultValue: 'https://github.com/DialgicMew/jenkins.git;', description: 'Enter the git repos seperated by a semicolon'),
                 string(name: 'source', defaultValue: 'master', description: 'Source Branch of comparison'),
                 string(name: 'target', defaultValue: 'dev', description: 'Target branch of comparison')
                 ]
