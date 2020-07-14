@@ -24,7 +24,7 @@ def evaluate(String ans){
             def output = sh returnStdout: true, script: "git diff --unified=0 remotes/origin/${params.source} remotes/origin/${params.target}" 
             def tag;
             for(int start = 0; start < output.length(); start = start + 1){
-                if(element == '<'){
+                if(output[start] == '<'){
                     tag = output.substring(start, start + 7)
                     echo tag
                     break
