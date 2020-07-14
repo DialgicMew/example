@@ -18,10 +18,15 @@ def gitFunction(String repo){
 def evaluate(String ans){
     if(ans.trim() == "pom.xml")
     {
+
+        def output = sh returnStdout: true, script: "git diff --unified=0 remotes/origin/${params.source} remotes/origin/${params.target}"  
+        
+        for(element in output){
+            echo element
+        }
         echo "yess bro"
-
     }
-
+        echo "No bro"
 }
 
 def inputValues(){
