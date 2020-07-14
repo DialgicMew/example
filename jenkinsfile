@@ -2,17 +2,19 @@
 // inputs repos
 // def checkBranchPattern(String pattern){} => true/false
 // def compareBranches(repo, sourceBranch, targetBranch,){} => diferences
-// def evaluateDifferences(String difference){} => true/false
+// def evaluateDifferences(String difference){} => true(if difference found other than version)/false(if no difference found or difference is only in version)
 // run only if checkBranchPattern true => def doJGitOperation(){"some commands"}
-def gitFunction(String repo){
- checkout([$class: 'GitSCM',
- branches: [[name: '*/master']],
- doGenerateSubmoduleConfigurations: false,
- extensions: [[$class: 'CleanBeforeCheckout']],
- submoduleCfg: [],
- userRemoteConfigs:  [[credentialsId: 'gitCreds', url: repo]]])
- def output = sh returnStdout: true, script: "git diff --name-only remotes/origin/${params.source} remotes/origin/${params.target}"  
- return output
+
+def gitFunction(String repo)
+{
+    checkout([$class: 'GitSCM',
+    branches: [[name: '*/master']],
+    doGenerateSubmoduleConfigurations: false,
+    extensions: [[$class: 'CleanBeforeCheckout']],
+    submoduleCfg: [],
+    userRemoteConfigs:  [[credentialsId: 'gitCreds', url: repo]]])
+    def output = sh returnStdout: true, script: "git diff --name-only remotes/origin/${params.source} remotes/origin/${params.target}"  
+    return output
 }
 
 def evaluate(String ans){
@@ -20,22 +22,28 @@ def evaluate(String ans){
     {
         def numAns = sh returnStdout: true, script: "git diff --numstat remotes/origin/${params.source} remotes/origin/${params.target}"
         def numOfLines = numAns.substring(0, 2).trim()
-        if(numOfLines == '1'){
+        if(numOfLines == '1')
+        {
             def output = sh returnStdout: true, script: "git diff --unified=0 remotes/origin/${params.source} remotes/origin/${params.target}" 
             def tag;
-            for(int start = 0; start < output.length(); start = start + 1){
-                if(output[start] == '<'){
+            for(int start = 0; start < output.length(); start = start + 1)
+            {
+                if(output[start] == '<')
+                {
                     tag = output.substring(start+1, start + 8)
                     echo tag
                     break
                 }
-                
             }
+            if(tag == 'version')
+            {
+                return false
+            }
+            return true
         }
-
-        echo "yess bro"
+        return true
     }
-        echo "No bro"
+    return true
 }
 
 def inputValues(){
@@ -43,8 +51,10 @@ def inputValues(){
     def start = 0
     def end = 0
     def var = params.gitRepos
-    for (element in var) {
-        if(element == ';'){
+    for (element in var)
+    {
+        if(element == ';')
+        {
             def additionValue = var.substring(start, end)
             names.add(additionValue)
             start = end + 1
@@ -56,22 +66,28 @@ def inputValues(){
 
 def result;
 
-node{
-
-properties([
-  parameters(
-    [booleanParam(name: 'checkPattern', defaultValue: false, description: 'Check Branch Pattern?'),
-    booleanParam(name: 'doRelease', defaultValue: false, description: 'Release '),
-    text(name: 'gitRepos', defaultValue: 'https://github.com/DialgicMew/example.git;', description: 'Enter the git repos seperated by a semicolon'),
-    string(name: 'source', defaultValue: 'master', description: 'Source Branch of comparison'),
-    string(name: 'target', defaultValue: 'dev', description: 'Target branch of comparison')])
-])
-
+node
+{
+properties
+(
+    [
+        parameters(
+                [
+                booleanParam(name: 'checkPattern', defaultValue: false, description: 'Check Branch Pattern?'),
+                booleanParam(name: 'doRelease', defaultValue: false, description: 'Release '),
+                text(name: 'gitRepos', defaultValue: 'https://github.com/DialgicMew/jenkins.git;', description: 'Enter the git repos seperated by a semicolon'),
+                string(name: 'source', defaultValue: 'master', description: 'Source Branch of comparison'),
+                string(name: 'target', defaultValue: 'dev', description: 'Target branch of comparison')
+                ]
+        )
+    ]
+)
 stage('Build') 
 {
     echo "${params.source}"
     result = inputValues()
-    for (element in result) {
+    for (element in result)
+    {
         def answer = gitFunction(element)
         evaluate(answer)
         echo answer
