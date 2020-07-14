@@ -38,6 +38,9 @@ def evaluate(String ans){
         }
         return true
     }
+    else if(ans.trim() == ""){
+        return false
+    }
     return true
 }
 
