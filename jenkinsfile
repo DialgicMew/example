@@ -24,11 +24,11 @@ def evaluate(String ans){
             def output = sh returnStdout: true, script: "git diff --unified=0 remotes/origin/${params.source} remotes/origin/${params.target}" 
             def start = 0;
             def tag;
-            for(element in output){
-                start = start + 1
+            for(int start = 0; start < output.length(); start = start + 1){
                 if(element == '<'){
-                    tag = output.substring(start, start + 8)
+                    tag = output.substring(start, start + 7)
                     echo tag
+                    break
                 }
                 
             }
