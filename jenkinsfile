@@ -1,4 +1,5 @@
 #!/usr/bin/env groovy
+
 def gitFunction(String repo){
  checkout([$class: 'GitSCM',
  branches: [[name: '*/master']],
@@ -12,8 +13,8 @@ def gitFunction(String repo){
 def findBranch(){
     //git branch -r --list origin/release-*.*.*
     // what will you guys use in your scenario above one or bottom one
-    def ans = sh returnStdout: true, script: "git branch --list release-*.*.*"  
-    if(ans.trim() != ''){
+    def branchList = sh returnStdout: true, script: "git branch --list release-*.*.*"  
+    if(branchList.trim() != ''){
         return true
         //means that there exists some repo like release-*.*.*
     }
@@ -21,9 +22,9 @@ def findBranch(){
     //means that there no existing repo like release-*.*.*
 }
 
-def evaluate(String ans){
-    def ans = sh returnStdout: true, script: "git diff --name-only remotes/origin/${params.source} remotes/origin/${params.target}"  
-    if(ans.trim() == "pom.xml")
+def evaluate(){
+    def fileName = sh returnStdout: true, script: "git diff --name-only remotes/origin/${params.source} remotes/origin/${params.target}"  
+    if(fileName.trim() == "pom.xml")
     {
         def numAns = sh returnStdout: true, script: "git diff --numstat remotes/origin/${params.source} remotes/origin/${params.target}"
         def numOfLines = numAns.substring(0, 2).trim()
