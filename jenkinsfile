@@ -97,7 +97,7 @@ stage('Operation')
             }
         } 
     }
-    else if(params.source == 'release'){
+    else if(params.source.substring(0, 7) == 'release'){
         for (element in result) {
             gitFunction(element)
             def boolAns = findBranch()
