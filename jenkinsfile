@@ -7,6 +7,7 @@ def gitFunction(String repo){
  extensions: [[$class: 'CleanBeforeCheckout']],
  submoduleCfg: [],
  userRemoteConfigs:  [[credentialsId: 'gitCreds', url: repo]]])
+ //add your own git creds thing
 }
 
 
@@ -72,32 +73,32 @@ node{
 
 properties([
   parameters(
-    [booleanParam(name: 'checkPattern', defaultValue: false, description: 'Check Branch Pattern?'),
-    text(name: 'gitRepos', defaultValue: 'https://github.com/DialgicMew/jenkins.git;', description: 'Enter the git repos, add a semicolon after each repo'),
+    [choice(name: 'choice', choices: ['Start-Release', 'End-Release'], description: 'Select Mode'),
+    text(name: 'GitRepos', defaultValue: 'https://github.com/DialgicMew/jenkins.git;', description: 'Enter the git repos, add a semicolon after each repo'),
     text(name: 'EmailIds', defaultValue: 'vatsalya.singh.ext@telekom-digital.com;', description: 'Enter the git repos, add a semicolon after each repo'),
-    string(name: 'source', defaultValue: 'master', description: 'Source Branch of comparison'),
+    string(name: 'source', defaultValue: 'dev', description: 'Source Branch of comparison'),
     // defaultValue to be changed to dev in source and master in target. default value to be set to a company git repo in gitRepos ending by semicolon
-    string(name: 'target', defaultValue: 'dev', description: 'Target branch of comparison')])
+    string(name: 'target', defaultValue: 'master', description: 'Target branch of comparison')])
 ])
 
 stage('Operation') 
 {
     def result = inputValues(params.gitRepos)
     def emails = inputValues(params.EmailIds)
-    if(params.source == 'master'){
+    if(params.choice == 'Start-Release'){
         // master to be changed to dev
         for (element in result) {
             gitFunction(element)
             def ansBool = evaluate()
             if(ansBool == false){
-                echo "Code Repository ${element} not eligible for release, since no code difference found between ${params.source} and ${params.target}"
+                echo "Code Repository ${element} not eligible for release, since no code difference found between branches ${params.source} and ${params.target}"
             }
             else{
                 echo "Some Changes have been detected between branches ${params.source} and ${params.target} in ${element}"
             }
         } 
     }
-    else if(params.source.substring(0, 7) == 'release'){
+    else if(params.choice == 'End-Release'){
         for (element in result) {
             gitFunction(element)
             def boolAns = findBranch()
